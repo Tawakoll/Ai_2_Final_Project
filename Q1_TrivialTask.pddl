@@ -20,6 +20,7 @@
     (task-at tighten-bolt worksite1)
     (requires-tool tighten-bolt wrench)
   )
+  
 
   (:goal
     (task-done tighten-bolt)
