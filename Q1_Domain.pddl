@@ -1,105 +1,107 @@
-(define (domain assignment-q1-domain)
-  (:requirements :typing :fluents :quantified-preconditions)
-  
-  (:types 
-    robot location tool task - object
+(define (domain tool-management)
+  (:requirements :strips :typing)
+
+  (:types
+    robot location tool tool-slot task
   )
-  
+
   (:predicates
-    (at ?r - robot ?l - location)
+    (robot-at ?r - robot ?l - location)
     (connected ?l1 - location ?l2 - location)
     (tool-at ?t - tool ?l - location)
     (carrying ?r - robot ?t - tool)
+    (tool-in-slot ?t - tool ?s - tool-slot)
+    (slot-free ?s - tool-slot)
     (mounted ?r - robot ?t - tool)
-    (task-at ?tsk - task ?l - location)
-    (task-requires ?tsk - task ?t - tool)
-    (task-done ?tsk - task)
-    (is-storage ?l - location)
-  )
-
-  (:functions
-    (carried-amount ?r - robot)
-    (max-capacity ?r - robot)
+    (mount-slot-free ?r - robot)
+    (task-at ?k - task ?l - location)
+    (requires-tool ?k - task ?t - tool)
+    (task-done ?k - task)
   )
 
   (:action move
     :parameters (?r - robot ?from - location ?to - location)
-    :precondition (and 
-      (at ?r ?from)
+    :precondition (and
+      (robot-at ?r ?from)
       (connected ?from ?to)
     )
-    :effect (and 
-      (not (at ?r ?from))
-      (at ?r ?to)
+    :effect (and
+      (not (robot-at ?r ?from))
+      (robot-at ?r ?to)
     )
   )
 
-  (:action pickup-tool
-    :parameters (?r - robot ?t - tool ?l - location)
-    :precondition (and 
-      (at ?r ?l)
+  (:action pick-up
+    :parameters (?r - robot ?t - tool ?l - location ?s - tool-slot)
+    :precondition (and
+      (robot-at ?r ?l)
       (tool-at ?t ?l)
-      (is-storage ?l)
-      (< (carried-amount ?r) (max-capacity ?r))
+      (slot-free ?s)
     )
-    :effect (and 
+    :effect (and
       (not (tool-at ?t ?l))
+      (not (slot-free ?s))
       (carrying ?r ?t)
-      (increase (carried-amount ?r) 1)
+      (tool-in-slot ?t ?s)
     )
   )
 
-  (:action drop-tool
-    :parameters (?r - robot ?t - tool ?l - location)
-    :precondition (and 
-      (at ?r ?l)
+  (:action return-tool
+    :parameters (?r - robot ?t - tool ?l - location ?s - tool-slot)
+    :precondition (and
+      (robot-at ?r ?l)
       (carrying ?r ?t)
-      (is-storage ?l)
+      (tool-in-slot ?t ?s)
     )
-    :effect (and 
+    :effect (and
       (not (carrying ?r ?t))
+      (not (tool-in-slot ?t ?s))
+      (slot-free ?s)
       (tool-at ?t ?l)
-      (decrease (carried-amount ?r) 1)
     )
   )
 
   (:action mount-tool
-    :parameters (?r - robot ?t - tool)
-    :precondition (and 
+    :parameters (?r - robot ?t - tool ?s - tool-slot)
+    :precondition (and
       (carrying ?r ?t)
-      (not (exists (?other - tool) (mounted ?r ?other)))
+      (tool-in-slot ?t ?s)
+      (mount-slot-free ?r)
     )
-    :effect (and 
+    :effect (and
       (not (carrying ?r ?t))
+      (not (tool-in-slot ?t ?s))
+      (slot-free ?s)
+      (not (mount-slot-free ?r))
       (mounted ?r ?t)
-      (decrease (carried-amount ?r) 1)
     )
   )
 
   (:action unmount-tool
-    :parameters (?r - robot ?t - tool)
-    :precondition (and 
+    :parameters (?r - robot ?t - tool ?s - tool-slot)
+    :precondition (and
       (mounted ?r ?t)
-      (< (carried-amount ?r) (max-capacity ?r))
+      (slot-free ?s)
     )
-    :effect (and 
+    :effect (and
       (not (mounted ?r ?t))
+      (mount-slot-free ?r)
       (carrying ?r ?t)
-      (increase (carried-amount ?r) 1)
+      (tool-in-slot ?t ?s)
+      (not (slot-free ?s))
     )
   )
 
-  (:action perform-task
-    :parameters (?r - robot ?tsk - task ?t - tool ?l - location)
-    :precondition (and 
-      (at ?r ?l)
-      (task-at ?tsk ?l)
-      (task-requires ?tsk ?t)
+  (:action use-tool
+    :parameters (?r - robot ?t - tool ?k - task ?l - location)
+    :precondition (and
+      (robot-at ?r ?l)
+      (task-at ?k ?l)
+      (requires-tool ?k ?t)
       (mounted ?r ?t)
-      (not (task-done ?tsk))
     )
-    :effect (and 
-      (task-done ?tsk)
+    :effect (and
+      (task-done ?k)
     )
   )
 )

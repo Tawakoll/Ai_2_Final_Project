@@ -1,29 +1,27 @@
-(define (problem assignment-q1-simple)
-  (:domain assignment-q1-domain)
-  
+(define (problem tools-simple)
+  (:domain tool-management)
+
   (:objects
-    robby - robot
-    storage worksite - location
+    robot1 - robot
+    storageA - location
+    worksite1 - location
+    slot1 - tool-slot
     wrench - tool
     tighten-bolt - task
   )
 
   (:init
-    (at robby storage)
-    (connected storage worksite)
-    (connected worksite storage)
-    (is-storage storage)
-    
-    (tool-at wrench storage)
-    
-    (task-at tighten-bolt worksite)
-    (task-requires tighten-bolt wrench)
-    
-    (= (carried-amount robby) 0)
-    (= (max-capacity robby) 2)
+    (robot-at robot1 storageA)
+    (connected storageA worksite1)
+    (connected worksite1 storageA)
+    (tool-at wrench storageA)
+    (slot-free slot1)
+    (mount-slot-free robot1)
+    (task-at tighten-bolt worksite1)
+    (requires-tool tighten-bolt wrench)
   )
 
-  (:goal 
-    (forall (?tsk - task) (task-done ?tsk))
+  (:goal
+    (task-done tighten-bolt)
   )
 )
