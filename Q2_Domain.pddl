@@ -19,6 +19,7 @@
     (task-done ?k - task)
     (in-use ?t - tool)
     (broken ?t - tool)
+    (in-use-for ?t - tool ?k - task)
   )
 
   (:functions
@@ -104,6 +105,9 @@
   ; Using a tool is split into start/stop so that wear and temperature can
   ; accumulate continuously (via the wear-and-heat process) for as long as
   ; the tool is actually active, instead of changing state instantaneously.
+  ; in-use-for binds the running session to the specific task that opened
+  ; it, so a session started for one task cannot be closed out early to
+  ; complete a different task that merely shares the same tool.
   (:action start-use-tool
     :parameters (?r - robot ?t - tool ?k - task ?l - location)
     :precondition (and
@@ -117,6 +121,7 @@
     )
     :effect (and
       (in-use ?t)
+      (in-use-for ?t ?k)
       (assign (usage-duration ?t) 0)
     )
   )
@@ -131,11 +136,13 @@
       (requires-tool ?k ?t)
       (mounted ?r ?t)
       (in-use ?t)
+      (in-use-for ?t ?k)
       (not (broken ?t))
       (>= (usage-duration ?t) 5)
     )
     :effect (and
       (not (in-use ?t))
+      (not (in-use-for ?t ?k))
       (task-done ?k)
     )
   )
