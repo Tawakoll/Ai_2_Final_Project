@@ -1,2 +1,4 @@
 .vscode/
 .idea/
+Report/build_report.py
+Presentation/build_slides.py
