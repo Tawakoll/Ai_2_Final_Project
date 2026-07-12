@@ -1,11 +1,11 @@
 # Assignment D6-V2: Autonomous Orbital Maintenance Platform – Tool Management and Payload Transport
 
 **Which code to check (only one version of each exists):** PDDL (Q1) →
-`codes/Q1/Q1_Domain.pddl`; PDDL+ (Q2) → `codes/Q2/Q2_Domain.pddl`. Run either
-domain against any of its own problem files under `codes/Q1/` or `codes/Q2/`.
+`Codes/Q1/Q1_Domain.pddl`; PDDL+ (Q2) → `Codes/Q2/Q2_Domain.pddl`. Run either
+domain against any of its own problem files under `Codes/Q1/` or `Codes/Q2/`.
 Verified init/goal/plan output for every instance is in
-[`codes/Plans/`](codes/Plans). Report is in [`Report/`](Report), slides in
-[`slide/`](slide).
+[`Codes/Plans/`](Codes/Plans). Report is in [`Report/`](Report), slides in
+[`Presentation/`](Presentation).
 
 A single free-climbing maintenance robot retrieves, carries, mounts, uses, and
 returns tools across storage modules and worksites. Carrying a tool and having it
