@@ -1,0 +1,26 @@
+# Q2_SimpleTask — Initial State, Goal, Plan
+
+## Initial state
+
+- `robot1` at `storageA`
+- `storageA` <-> `worksite1` connected
+- `wrench` at `storageA`, cold (`wear`=0, `temperature`=0, `usage-duration`=0)
+- Task `tighten-bolt` at `worksite1`, requires `wrench`
+
+## Goal
+
+- `(task-done tighten-bolt)`
+
+## Plan (ENHSP)
+
+```
+0: (pick-up robot1 wrench storageA slot1)
+0: (move robot1 storageA worksite1)
+0: (mount-tool robot1 wrench slot1)
+0: (start-use-tool robot1 wrench tighten-bolt worksite1)
+0: -----waiting---- [5.0]
+5.0: (stop-use-tool robot1 wrench tighten-bolt worksite1)
+```
+
+Plan length: 10. The 5-unit wait is the mandatory minimum active-use duration
+enforced by `stop-use-tool`'s `usage-duration >= 5` precondition.
