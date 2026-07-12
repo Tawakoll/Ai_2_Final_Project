@@ -14,8 +14,6 @@
 ## Plan (ENHSP)
 
 ```
-Aibr Preprocessing
-Problem Detected as Unsolvable by AIBR during preprocessing
 Unsolvable Problem
 ```
 
