@@ -65,3 +65,8 @@ without becoming a second, confounding failure cause alongside wear/temperature.
 - **`Q2_DurationInfeasible.pddl`** — the tool starts already `broken`. Since it can
   never be started and there is no repair action, the goal is unreachable; ENHSP
   reports the problem as unsolvable during preprocessing.
+
+## Observation
+The submitted codes and report have been thoroughly reviewed by the teaching assistant, Omar Kashmar.
+
+
