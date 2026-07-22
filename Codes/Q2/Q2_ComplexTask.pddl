@@ -47,6 +47,8 @@
     (= (wear camera) 0)
     (= (temperature camera) 0)
     (= (usage-duration camera) 0)
+
+    (= (battery-level robot1) 100)
   )
 
   (:goal

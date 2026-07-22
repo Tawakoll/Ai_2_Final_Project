@@ -41,6 +41,18 @@ least 5 time units of active use (a task can't be completed instantly), and
 `start-use-tool` refuses to run a tool hotter than 80°, so a tool that hasn't
 cooled from its last use can't be restarted immediately.
 
+A fourth fluent, `battery-level` (per robot), models the assignment's "battery
+level" resource. It drains continuously via the `battery-drain` process (1/time
+unit, independent of what the robot is doing) and every action requires
+`battery-level > 0`. There is no recharge action, so the level only ever falls —
+which means a direct numeric guard on each action is enough to enforce it; no
+separate "powered-down" predicate or dedicated battery event is needed, unlike
+`tool-overheats` (which genuinely needs the event+flag pattern because
+`temperature` can rise and fall via `cool-down`, so `broken` has to latch
+permanently instead of being re-derived from the number). All problem instances
+start with 100 battery, generous enough that it's present and correctly modelled
+without becoming a second, confounding failure cause alongside wear/temperature.
+
 - **`Q2_SimpleTask.pddl`** — one tool, one task, cold start; confirms the
   process/event mechanics work without triggering any of them.
 - **`Q2_ComplexTask.pddl`** — the same multi-tool, multi-worksite, limited-capacity

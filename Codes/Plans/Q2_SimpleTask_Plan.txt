@@ -6,6 +6,8 @@
 - `storageA` <-> `worksite1` connected
 - `wrench` at `storageA`, cold (`wear`=0, `temperature`=0, `usage-duration`=0)
 - Task `tighten-bolt` at `worksite1`, requires `wrench`
+- `robot1`'s `battery-level` = 100 (drains at 1/time-unit via `battery-drain`;
+  every action requires `battery-level > 0`)
 
 ## Goal
 
@@ -23,4 +25,5 @@
 ```
 
 Plan length: 10. The 5-unit wait is the mandatory minimum active-use duration
-enforced by `stop-use-tool`'s `usage-duration >= 5` precondition.
+enforced by `stop-use-tool`'s `usage-duration >= 5` precondition. Battery ends
+at 95/100 -- present and correctly draining, but never binding here.

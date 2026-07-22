@@ -5,6 +5,8 @@
 Same layout as `Q1_ComplexTask` (one robot, tools `wrench`/`drill` at `storageA`,
 `camera` at `storageB`, two tool-slots, three tasks across `worksite1`/`worksite2`),
 with every tool starting cold (`wear`=0, `temperature`=0, `usage-duration`=0).
+`robot1`'s `battery-level` = 100 (drains at 1/time-unit via `battery-drain`;
+every action requires `battery-level > 0`).
 
 ## Goal
 
@@ -17,32 +19,33 @@ with every tool starting cold (`wear`=0, `temperature`=0, `usage-duration`=0).
 0: (pick-up robot1 wrench storageA slot1)
 0: (move robot1 storageA worksite1)
 0: (move robot1 worksite1 worksite2)
-0: (mount-tool robot1 drill slot2)
-0: (move robot1 worksite2 storageB)
-0: (pick-up robot1 camera storageB slot2)
-0: (move robot1 storageB worksite2)
-0: (move robot1 worksite2 worksite1)
-0: (return-tool robot1 camera worksite1 slot2)
-0: (start-use-tool robot1 drill drill-hole worksite1)
-0: -----waiting---- [5.0]
-5.0: (stop-use-tool robot1 drill drill-hole worksite1)
-5.0: (unmount-tool robot1 drill slot2)
-5.0: (mount-tool robot1 wrench slot1)
-5.0: (pick-up robot1 camera worksite1 slot1)
-5.0: (move robot1 worksite1 worksite2)
-5.0: (return-tool robot1 drill worksite2 slot2)
-5.0: -----waiting---- [8.0]
-8.0: (move robot1 worksite2 worksite1)
-8.0: (start-use-tool robot1 wrench tighten-bolt worksite1)
-8.0: -----waiting---- [13.0]
-13.0: (stop-use-tool robot1 wrench tighten-bolt worksite1)
-13.0: (move robot1 worksite1 worksite2)
-13.0: (unmount-tool robot1 wrench slot2)
-13.0: (mount-tool robot1 camera slot1)
-13.0: (start-use-tool robot1 camera inspect-panel worksite2)
-13.0: -----waiting---- [18.0]
-18.0: (stop-use-tool robot1 camera inspect-panel worksite2)
+0: (mount-tool robot1 wrench slot1)
+0: -----waiting---- [3.0]
+3.0: (move robot1 worksite2 storageB)
+3.0: (pick-up robot1 camera storageB slot1)
+3.0: (move robot1 storageB worksite2)
+3.0: (move robot1 worksite2 worksite1)
+3.0: -----waiting---- [42.0]
+42.0: (start-use-tool robot1 wrench tighten-bolt worksite1)
+42.0: -----waiting---- [47.0]
+47.0: (stop-use-tool robot1 wrench tighten-bolt worksite1)
+47.0: (return-tool robot1 drill worksite1 slot2)
+47.0: (unmount-tool robot1 wrench slot2)
+47.0: (return-tool robot1 wrench worksite1 slot2)
+47.0: (pick-up robot1 drill worksite1 slot2)
+47.0: (mount-tool robot1 drill slot2)
+47.0: (start-use-tool robot1 drill drill-hole worksite1)
+47.0: -----waiting---- [52.0]
+52.0: (stop-use-tool robot1 drill drill-hole worksite1)
+52.0: (move robot1 worksite1 worksite2)
+52.0: (unmount-tool robot1 drill slot2)
+52.0: (mount-tool robot1 camera slot1)
+52.0: (start-use-tool robot1 camera inspect-panel worksite2)
+52.0: -----waiting---- [57.0]
+57.0: (stop-use-tool robot1 camera inspect-panel worksite2)
 ```
 
-Plan length: 43, total elapsed time 18.0. Combines the Q1 capacity-driven tool
-juggling with mandatory per-use wait times.
+Plan length: 80, total elapsed time 57.0. Combines the Q1 capacity-driven tool
+juggling with mandatory per-use wait times. (Longer than the pre-battery version
+of this plan -- adding a numeric precondition to every action changes ENHSP's
+search order; battery itself never binds, ending at 43/100.)

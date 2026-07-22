@@ -6,6 +6,8 @@
 - `drill` at `storageA`, already warm: `temperature`=70, `wear`=0, `usage-duration`=0
 - Two tasks needing the same `drill`: `drill-hole-1` at `worksite1`,
   `drill-hole-2` at `worksite2`
+- `robot1`'s `battery-level` = 100 (drains at 1/time-unit via `battery-drain`;
+  every action requires `battery-level > 0`)
 
 ## Goal
 
@@ -19,17 +21,19 @@
 0: (mount-tool robot1 drill slot1)
 0: -----waiting---- [12.0]
 12.0: (move robot1 worksite1 worksite2)
-12.0: -----waiting---- [34.0]
-34.0: (start-use-tool robot1 drill drill-hole-2 worksite2)
-34.0: -----waiting---- [40.0]
-40.0: (stop-use-tool robot1 drill drill-hole-2 worksite2)
-40.0: (move robot1 worksite2 worksite1)
-40.0: -----waiting---- [43.0]
-43.0: (start-use-tool robot1 drill drill-hole-1 worksite1)
-43.0: -----waiting---- [48.0]
-48.0: (stop-use-tool robot1 drill drill-hole-1 worksite1)
+12.0: -----waiting---- [59.0]
+59.0: (start-use-tool robot1 drill drill-hole-2 worksite2)
+59.0: -----waiting---- [64.0]
+64.0: (stop-use-tool robot1 drill drill-hole-2 worksite2)
+64.0: (move robot1 worksite2 worksite1)
+64.0: -----waiting---- [75.0]
+75.0: (start-use-tool robot1 drill drill-hole-1 worksite1)
+75.0: -----waiting---- [80.0]
+80.0: (stop-use-tool robot1 drill drill-hole-1 worksite1)
 ```
 
-Plan length: 57, total elapsed time 48.0. ENHSP's satisficing search finds waits
+Plan length: 89, total elapsed time 80.0. ENHSP's satisficing search finds waits
 longer than the strict minimum, but the key point holds: it cannot start the
 second use of the drill without first letting time pass for it to cool below 80°.
+Battery ends at 20/100 -- present, correctly draining across the full 80-unit
+plan, but still never the binding constraint (temperature is).

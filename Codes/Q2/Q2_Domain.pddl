@@ -26,6 +26,7 @@
     (wear ?t - tool)
     (temperature ?t - tool)
     (usage-duration ?t - tool)
+    (battery-level ?r - robot)
   )
 
   (:action move
@@ -33,6 +34,7 @@
     :precondition (and
       (robot-at ?r ?from)
       (connected ?from ?to)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (robot-at ?r ?from))
@@ -46,6 +48,7 @@
       (robot-at ?r ?l)
       (tool-at ?t ?l)
       (slot-free ?s)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (tool-at ?t ?l))
@@ -61,6 +64,7 @@
       (robot-at ?r ?l)
       (carrying ?r ?t)
       (tool-in-slot ?t ?s)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (carrying ?r ?t))
@@ -76,6 +80,7 @@
       (carrying ?r ?t)
       (tool-in-slot ?t ?s)
       (mount-slot-free ?r)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (carrying ?r ?t))
@@ -92,6 +97,7 @@
       (mounted ?r ?t)
       (slot-free ?s)
       (not (in-use ?t))
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (mounted ?r ?t))
@@ -118,6 +124,7 @@
       (not (in-use ?t))
       (not (broken ?t))
       (<= (temperature ?t) 80)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (in-use ?t)
@@ -139,6 +146,7 @@
       (in-use-for ?t ?k)
       (not (broken ?t))
       (>= (usage-duration ?t) 5)
+      (> (battery-level ?r) 0)
     )
     :effect (and
       (not (in-use ?t))
@@ -168,6 +176,17 @@
       (> (temperature ?t) 0)
     )
     :effect (decrease (temperature ?t) (* #t 2))
+  )
+
+  ; Battery drains continuously with elapsed time, independent of what the
+  ; robot is doing. There is no recharge action, so battery-level only ever
+  ; decreases; a direct numeric guard on every action is therefore enough to
+  ; stop the robot once power runs out -- no separate "powered-down" flag or
+  ; event is needed, since the number itself can never rise back above zero.
+  (:process battery-drain
+    :parameters (?r - robot)
+    :precondition (> (battery-level ?r) 0)
+    :effect (decrease (battery-level ?r) (* #t 1))
   )
 
   ; If a tool is left running (or reused before it has cooled), its

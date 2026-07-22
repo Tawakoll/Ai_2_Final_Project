@@ -38,6 +38,8 @@
     (= (wear drill) 0)
     (= (temperature drill) 70)
     (= (usage-duration drill) 0)
+
+    (= (battery-level robot1) 100)
   )
 
   (:goal

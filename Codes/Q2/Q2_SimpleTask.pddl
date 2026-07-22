@@ -23,6 +23,8 @@
     (= (wear wrench) 0)
     (= (temperature wrench) 0)
     (= (usage-duration wrench) 0)
+
+    (= (battery-level robot1) 100)
   )
 
   (:goal

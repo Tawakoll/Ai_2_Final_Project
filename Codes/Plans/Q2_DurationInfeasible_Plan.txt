@@ -6,6 +6,8 @@
 - `drill` at `storageA`, already `broken`, cold otherwise (`wear`=0,
   `temperature`=0, `usage-duration`=0)
 - Task `drill-hole` at `worksite1`, requires `drill`
+- `robot1`'s `battery-level` = 100 -- present but irrelevant here: the broken
+  tool alone already makes the goal unreachable, regardless of battery
 
 ## Goal
 
